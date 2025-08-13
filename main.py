@@ -66,3 +66,21 @@ def key_stats():
         }
     }
 }
+
+app.get("/export")
+def export_data():
+    return {
+        "exported_data": [
+            {
+                "device_id": "esp32-001",
+                "timestamp": "2025-08-09T12:00:00Z",
+                "temperature": 22.5,
+                "air_quality": {
+                    "pm2_5": 12,
+                    "pm10": 20,
+                    "quality": "Good"
+                },
+                "light_intensity": 300
+            }
+        ]
+    }
