@@ -1,4 +1,9 @@
 from fastapi import FastAPI
+import smtplib 
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import schedule 
+import time
 
 app = FastAPI()
 
@@ -67,7 +72,7 @@ def key_stats():
     }
 }
 
-app.get("/export")
+@app.get("/export")
 def export_data():
     return {
         "exported_data": [
@@ -84,3 +89,38 @@ def export_data():
             }
         ]
     }
+
+def send_email():
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587
+    sender_email = "businessemailtime0@gmail.com"
+    receiver_email = "businessemailtime0@gmail.com"
+    passwword = "xhgb twyj gwkz ldfa"
+
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = "Environment Sensor Data Export"
+
+    body = "Please find the attached exported data."
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender_email, passwword)
+        text = msg.as_string()
+        server.sendmail(sender_email, receiver_email, text)
+        server.quit()
+        print("Email sent successfully")
+
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+
+schedule.every(1).minutes.do(send_email)
+
+while True:
+        schedule.run_pending()
+        time.sleep(10)
