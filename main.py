@@ -93,9 +93,9 @@ def export_data():
 def send_email():
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    sender_email = "businessemailtime0@gmail.com"
-    receiver_email = "businessemailtime0@gmail.com"
-    passwword = "xhgb twyj gwkz ldfa"
+    sender_email = "add_sender_email_here"
+    receiver_email = "add_receiver_email_here"
+    passwword = "add_own_password_here"
 
 
     msg = MIMEMultipart()
