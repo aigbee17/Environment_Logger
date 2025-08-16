@@ -18,3 +18,6 @@ EXPOSE 5000
 
 # Run the FastAPI app with Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
+
+# Copy database 
+COPY database.py .
