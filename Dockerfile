@@ -21,3 +21,6 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
 
 # Copy database 
 COPY database.py .
+
+#Install additional dependencies for database
+RUN pip install --no-cache-dir sqlalchemy psycopg2-binary
