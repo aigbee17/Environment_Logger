@@ -1,11 +1,24 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 import smtplib 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import schedule 
 import time
-
+from sqlalchemy.orm import Session
+from db import Base, engine, SessionLocal, TemperatureSensor, AirQualitySensorPM25, LightSensor
+from datetime import datetime,timedelta
 app = FastAPI()
+
+
+Base.metadata.create_all(bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 @app.get("/")
 def read_root():
