@@ -5,8 +5,9 @@ from email.mime.text import MIMEText
 import schedule 
 import time
 from sqlalchemy.orm import Session
-from db import Base, engine, SessionLocal, TemperatureSensor, AirQualitySensorPM25, LightSensor
+from database import Base, engine, SessionLocal, TemperatureSensor, AirQualitySensorPM25, LightSensor
 from datetime import datetime,timedelta
+from pydantic import BaseModel
 app = FastAPI()
 
 
@@ -19,14 +20,47 @@ def get_db():
     finally:
         db.close()
 
+class TempCreate(BaseModel): ##test
+    value: float
+    unit: str
+    timestamp: datetime
+
+@app.post("/data/add_temperature") ##test
+def add_temperature(payload: TempCreate, db: Session = Depends(get_db)):
+    row = TemperatureSensor(
+        value=payload.value,
+        unit=payload.unit,
+        timestamp=payload.timestamp
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return {
+        "id": row.id,
+        "value": row.value,
+        "unit": row.unit,
+        "timestamp": row.timestamp
+    }
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to environment sensor data"}
 
 @app.get("/data/latest_temperature")
-def home_temperature():
-    return {"temperature": 22.5, "unit": "Celsius", "timestamp": "2025-08-09T12:00:00Z", "device_id": "esp32-001"}
+def home_temperature(db: Session = Depends(get_db)):
+    row = (
+        db.query(TemperatureSensor)
+        .order_by(TemperatureSensor.timestamp.desc())
+        .first()
+    )
+
+    if row is None:
+        raise HTTPException(status_code=404, detail="No temperature data found")
+    return {
+        "temperature": row.value,
+        "unit": row.unit,
+        "timestamp": row.timestamp
+    }
 
 
 @app.get("/data/latest_air")
@@ -103,6 +137,7 @@ def export_data():
         ]
     }
 
+'''
 def send_email():
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
@@ -137,3 +172,6 @@ schedule.every(1).minutes.do(send_email)
 while True:
         schedule.run_pending()
         time.sleep(10)
+
+
+'''
