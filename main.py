@@ -30,6 +30,11 @@ class AirQualityCreate(BaseModel): ##test
     unit: str
     timestamp: datetime
 
+class LightCreate(BaseModel): ##test
+    value: float
+    unit: str
+    timestamp: datetime
+
 @app.post("/data/add_temperature") ##test
 def add_temperature(payload: TempCreate, db: Session = Depends(get_db)):
     row = TemperatureSensor(
@@ -59,6 +64,23 @@ def add_air_quality(payload: AirQualityCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(row)
     return {
+        "id": row.id,
+        "value": row.value,
+        "unit": row.unit,
+        "timestamp": row.timestamp
+    }
+
+@app.post("/data/add_light") ##test
+def add_light(payload: LightCreate, db: Session = Depends(get_db)):
+    row = LightSensor(
+        value = payload.value,
+        unit = payload.unit,
+        timestamp = payload.timestamp
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return{
         "id": row.id,
         "value": row.value,
         "unit": row.unit,
@@ -101,8 +123,19 @@ def home_air_quality(db: Session = Depends(get_db)):
         "timestamp": row.timestamp
     }
 @app.get("/data/latest_light")
-def home_light():
-    return {"light_intensity": 300, "unit": "lux", "timestamp": "2025-08-09T12:00:00Z", "device_id": "esp32-001"}
+def home_light(db: Session = Depends(get_db)):
+    row = (
+        db.query(LightSensor)
+        .order_by(LightSensor.timestamp.desc(), LightSensor.id.desc())
+        .first()
+    )
+    if row is None:
+        raise HTTPException(status_code=404, detail="No light data found")
+    return {
+        "light_intensity": row.value,
+        "unit": row.unit,
+        "timestamp": row.timestamp
+    }
 
 
 @app.get("/key_stats")
