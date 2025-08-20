@@ -25,9 +25,32 @@ class TempCreate(BaseModel): ##test
     unit: str
     timestamp: datetime
 
+class AirQualityCreate(BaseModel): ##test
+    value: float
+    unit: str
+    timestamp: datetime
+
 @app.post("/data/add_temperature") ##test
 def add_temperature(payload: TempCreate, db: Session = Depends(get_db)):
     row = TemperatureSensor(
+        value=payload.value,
+        unit=payload.unit,
+        timestamp=payload.timestamp
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return {
+        "id": row.id,
+        "value": row.value,
+        "unit": row.unit,
+        "timestamp": row.timestamp
+    }
+
+
+@app.post("/data/add_air_quality") ##test
+def add_air_quality(payload: AirQualityCreate, db: Session = Depends(get_db)):
+    row = AirQualitySensorPM25(
         value=payload.value,
         unit=payload.unit,
         timestamp=payload.timestamp
@@ -50,7 +73,7 @@ def read_root():
 def home_temperature(db: Session = Depends(get_db)):
     row = (
         db.query(TemperatureSensor)
-        .order_by(TemperatureSensor.timestamp.desc())
+        .order_by(TemperatureSensor.timestamp.desc(), TemperatureSensor.id.desc())
         .first()
     )
 
@@ -64,9 +87,19 @@ def home_temperature(db: Session = Depends(get_db)):
 
 
 @app.get("/data/latest_air")
-def home_air_quality():
-    return {"air_quality": "Good", "pm2_5": 12, "pm10": 20, "timestamp": "2025-08-09T12:00:00Z", "device_id": "esp32-001"}
-
+def home_air_quality(db: Session = Depends(get_db)):
+    row = (
+        db.query(AirQualitySensorPM25)
+        .order_by(AirQualitySensorPM25.timestamp.desc(), AirQualitySensorPM25.id.desc())
+        .first()
+    )
+    if row is None:
+        raise HTTPException(status_code=404, detail="No air quality data found")
+    return {
+        "pm2_5": row.value,
+        "unit": row.unit,
+        "timestamp": row.timestamp
+    }
 @app.get("/data/latest_light")
 def home_light():
     return {"light_intensity": 300, "unit": "lux", "timestamp": "2025-08-09T12:00:00Z", "device_id": "esp32-001"}
