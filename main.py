@@ -20,22 +20,22 @@ def get_db():
     finally:
         db.close()
 
-class TempCreate(BaseModel): ##test
+class TempCreate(BaseModel): 
     value: float
     unit: str
     timestamp: datetime
 
-class AirQualityCreate(BaseModel): ##test
+class AirQualityCreate(BaseModel): 
     value: float
     unit: str
     timestamp: datetime
 
-class LightCreate(BaseModel): ##test
+class LightCreate(BaseModel):
     value: float
     unit: str
     timestamp: datetime
 
-@app.post("/data/add_temperature") ##test
+@app.post("/data/add_temperature") 
 def add_temperature(payload: TempCreate, db: Session = Depends(get_db)):
     row = TemperatureSensor(
         value=payload.value,
@@ -53,7 +53,7 @@ def add_temperature(payload: TempCreate, db: Session = Depends(get_db)):
     }
 
 
-@app.post("/data/add_air_quality") ##test
+@app.post("/data/add_air_quality") 
 def add_air_quality(payload: AirQualityCreate, db: Session = Depends(get_db)):
     row = AirQualitySensorPM25(
         value=payload.value,
@@ -70,7 +70,7 @@ def add_air_quality(payload: AirQualityCreate, db: Session = Depends(get_db)):
         "timestamp": row.timestamp
     }
 
-@app.post("/data/add_light") ##test
+@app.post("/data/add_light") 
 def add_light(payload: LightCreate, db: Session = Depends(get_db)):
     row = LightSensor(
         value = payload.value,
