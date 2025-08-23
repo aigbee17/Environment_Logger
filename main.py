@@ -8,34 +8,35 @@ from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal, TemperatureSensor, AirQualitySensorPM25, LightSensor
 from datetime import datetime,timedelta
 from pydantic import BaseModel
+
 app = FastAPI()
 
 
 Base.metadata.create_all(bind=engine)
 
-def get_db():
+def get_db(): # Dependency to get DB session
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
-class TempCreate(BaseModel): 
+class TempCreate(BaseModel): # Pydantic model for temperature data
     value: float
     unit: str
     timestamp: datetime
 
-class AirQualityCreate(BaseModel): 
+class AirQualityCreate(BaseModel): # Pydantic model for air quality data
     value: float
     unit: str
     timestamp: datetime
 
-class LightCreate(BaseModel):
+class LightCreate(BaseModel): # Pydantic model for light data
     value: float
     unit: str
     timestamp: datetime
 
-@app.post("/data/add_temperature") 
+@app.post("/data/add_temperature") # Endpoint to add temperature data
 def add_temperature(payload: TempCreate, db: Session = Depends(get_db)):
     row = TemperatureSensor(
         value=payload.value,
