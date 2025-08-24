@@ -54,7 +54,7 @@ def add_temperature(payload: TempCreate, db: Session = Depends(get_db)):
     }
 
 
-@app.post("/data/add_air_quality") 
+@app.post("/data/add_air_quality") #Endpoint to add air quality data
 def add_air_quality(payload: AirQualityCreate, db: Session = Depends(get_db)):
     row = AirQualitySensorPM25(
         value=payload.value,
@@ -71,7 +71,7 @@ def add_air_quality(payload: AirQualityCreate, db: Session = Depends(get_db)):
         "timestamp": row.timestamp
     }
 
-@app.post("/data/add_light") 
+@app.post("/data/add_light") #Endpoint to add light data
 def add_light(payload: LightCreate, db: Session = Depends(get_db)):
     row = LightSensor(
         value = payload.value,
@@ -88,11 +88,11 @@ def add_light(payload: LightCreate, db: Session = Depends(get_db)):
         "timestamp": row.timestamp
     }
 
-@app.get("/")
+@app.get("/") # Root endpoint
 def read_root():
     return {"message": "Welcome to environment sensor data"}
 
-@app.get("/data/latest_temperature")
+@app.get("/data/latest_temperature") # Endpoint to get latest temperature data
 def home_temperature(db: Session = Depends(get_db)):
     row = (
         db.query(TemperatureSensor)
@@ -109,7 +109,7 @@ def home_temperature(db: Session = Depends(get_db)):
     }
 
 
-@app.get("/data/latest_air")
+@app.get("/data/latest_air") # Endpoint to get latest air quality data
 def home_air_quality(db: Session = Depends(get_db)):
     row = (
         db.query(AirQualitySensorPM25)
@@ -123,7 +123,7 @@ def home_air_quality(db: Session = Depends(get_db)):
         "unit": row.unit,
         "timestamp": row.timestamp
     }
-@app.get("/data/latest_light")
+@app.get("/data/latest_light") # Endpoint to get latest light data
 def home_light(db: Session = Depends(get_db)):
     row = (
         db.query(LightSensor)
@@ -139,7 +139,7 @@ def home_light(db: Session = Depends(get_db)):
     }
 
 
-@app.get("/key_stats")
+@app.get("/key_stats") # Endpoint to get key statistics
 def key_stats():
     return {
     "temperature_sensor": {
@@ -186,7 +186,7 @@ def key_stats():
     }
 }
 
-@app.get("/export")
+@app.get("/export") # Endpoint to export data
 def export_data():
     return {
         "exported_data": [
@@ -205,7 +205,7 @@ def export_data():
     }
 
 '''
-def send_email():
+def send_email(): # Function that will send alert email  
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
     sender_email = "add_sender_email_here"
