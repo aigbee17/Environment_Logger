@@ -140,7 +140,7 @@ def home_light(db: Session = Depends(get_db)):
 
 
 @app.get("/key_stats") # Endpoint to get key statistics
-def key_stats():
+def key_stats(db: Session = Depends(get_db)):
     return {
     "temperature_sensor": {
         "average": {
