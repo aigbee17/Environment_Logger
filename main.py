@@ -181,7 +181,7 @@ def export_data():
     }
 
 
-def send_email(): # Function that will send alert email  
+def temp_send_email(value, unit): # Function that will send alert email  
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
     sender_email = "add_sender_email_here"
@@ -192,9 +192,9 @@ def send_email(): # Function that will send alert email
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = receiver_email
-    msg['Subject'] = "Environment Sensor Data Export"
+    msg['Subject'] = "Environment Sensor Alert System"
 
-    body = "Please find the attached exported data."
+    body = "ALERT! Sensor detected value of {} {}".format(value, unit) + " which is above the {} {} threshold.".format(30, "C")
     msg.attach(MIMEText(body, 'plain'))
 
     try:
@@ -210,10 +210,75 @@ def send_email(): # Function that will send alert email
         print(f"Failed to send email: {e}")
 
 
-schedule.every(1).minutes.do(send_email)
 
-while True:
-        schedule.run_pending()
-        time.sleep(10)
+
+
+
+
+def air_send_email(value, unit): # Function that will send alert email  
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587
+    sender_email = "add_sender_email_here"
+    receiver_email = "add_receiver_email_here"
+    passwword = "add_own_password_here"
+
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = "Environment Sensor Alert System"
+
+    body = "ALERT! Sensor detected value of {} {}".format(value, unit) + " which is above the {} {} threshold.".format(100, "µg/m3")
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender_email, passwword)
+        text = msg.as_string()
+        server.sendmail(sender_email, receiver_email, text)
+        server.quit()
+        print("Email sent successfully")
+
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+
+
+
+def light_send_email(value, unit): # Function that will send alert email  
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587
+    sender_email = "add_sender_email_here"
+    receiver_email = "add_receiver_email_here"
+    passwword = "add_own_password_here"
+
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = "Environment Sensor Alert System"
+
+    body = "ALERT! Sensor detected value of {} {}".format(value, unit) + " which is above the {} {} threshold.".format(800, "lux")
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender_email, passwword)
+        text = msg.as_string()
+        server.sendmail(sender_email, receiver_email, text)
+        server.quit()
+        print("Email sent successfully")
+
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+
+
+
+
+
+
 
 
