@@ -47,6 +47,9 @@ def add_temperature(payload: TempCreate, db: Session = Depends(get_db)):
     db.add(row)
     db.commit()
     db.refresh(row)
+
+    if row.value > 30: # Alert threshold for temperature
+        temp_send_email(row.value, row.unit)
     return {
         "id": row.id,
         "value": row.value,
@@ -65,6 +68,8 @@ def add_air_quality(payload: AirQualityCreate, db: Session = Depends(get_db)):
     db.add(row)
     db.commit()
     db.refresh(row)
+    if row.value > 100: # Alert threshold for air quality
+        air_send_email(row.value, row.unit)
     return {
         "id": row.id,
         "value": row.value,
@@ -82,6 +87,8 @@ def add_light(payload: LightCreate, db: Session = Depends(get_db)):
     db.add(row)
     db.commit()
     db.refresh(row)
+    if row.value > 800: # Alert threshold for light intensity
+        light_send_email(row.value, row.unit)
     return{
         "id": row.id,
         "value": row.value,
