@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal, TemperatureSensor, AirQualitySensorPM25, LightSensor
 from datetime import datetime,timedelta
 from pydantic import BaseModel
+from sqlalchemy import func
 
 app = FastAPI()
 
@@ -143,48 +144,23 @@ def home_light(db: Session = Depends(get_db)):
 def key_stats(db: Session = Depends(get_db)):
     return {
     "temperature_sensor": {
-        "average": {
-            "value": 21.8,
-            "timestamp": "2025-08-12T01:12:00"
-        },
-        "peak": {
-            "value": 26.13,
-            "timestamp": "2025-08-12T00:45:00"
-        },
-        "min": {
-            "value": 18.92,
-            "timestamp": "2025-08-12T00:10:00"
-        }
+        "total_readings": db.query(TemperatureSensor).count(),
+        "latest_reading": db.query(TemperatureSensor).order_by(TemperatureSensor.timestamp.desc(), TemperatureSensor.id.desc()).first().value if db.query(TemperatureSensor).count() > 0 else None,
+        "average_reading": db.query(func.avg(TemperatureSensor.value)).scalar() if db.query(TemperatureSensor).count() > 0 else None,
+        "Peak_reading": db.query(func.max(TemperatureSensor.value)).scalar() if db.query(TemperatureSensor).count() > 0 else None
     },
     "air_quality_sensor_pm2_5": {
-        "average": {
-            "value": 15,
-            "timestamp": "2025-08-12T01:32:00"
-        },
-        "peak": {
-            "value": 21.84,
-            "timestamp": "2025-08-12T00:50:00"
-        },
-        "min": {
-            "value": 13.12,
-            "timestamp": "2025-08-12T00:20:00"
-        }
+        "total_readings": db.query(AirQualitySensorPM25).count(),
+        "latest_reading": db.query(AirQualitySensorPM25).order_by(AirQualitySensorPM25.timestamp.desc(), AirQualitySensorPM25.id.desc()).first().value if db.query(AirQualitySensorPM25).count() > 0 else None,
+        "average_reading": db.query(func.avg(AirQualitySensorPM25.value)).scalar() if db.query(AirQualitySensorPM25).count() > 0 else None,
+        "Peak_reading": db.query(func.max(AirQualitySensorPM25.value)).scalar() if db.query(AirQualitySensorPM25).count() > 0 else None
     },
     "light_sensor": {
-        "average": {
-            "value": 250,
-            "timestamp": "2025-08-12T01:05:00"
-        },
-        "peak": {
-            "value": 383.65,
-            "timestamp": "2025-08-12T00:40:00"
-        },
-        "min": {
-            "value": 191.27,
-            "timestamp": "2025-08-12T00:15:00"
-        }
-    }
-}
+        "total_readings": db.query(LightSensor).count(),
+        "latest_reading": db.query(LightSensor).order_by(LightSensor.timestamp.desc(), LightSensor.id.desc()).first().value if db.query(LightSensor).count() > 0 else None,
+        "average_reading": db.query(func.avg(LightSensor.value)).scalar() if db.query(LightSensor).count() > 0 else None,
+        "Peak_reading": db.query(func.max(LightSensor.value)).scalar() if db.query(LightSensor).count() > 0 else None
+    }}
 
 @app.get("/export") # Endpoint to export data
 def export_data():
