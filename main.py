@@ -204,7 +204,7 @@ def export_data():
         ]
     }
 
-'''
+
 def send_email(): # Function that will send alert email  
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
@@ -241,4 +241,3 @@ while True:
         time.sleep(10)
 
 
-'''
