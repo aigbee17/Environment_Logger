@@ -1,7 +1,7 @@
 {
     "version":            "1.1",
     "project_name":       "FirstSensor",
-    "project_version":    "aca3d9b-dirty",
+    "project_version":    "f31cb83-dirty",
     "project_path":       "C:/Users/ealfa/Environment_Logger/Sensor/FirstSensor",
     "idf_path":           "C:/Espressif/frameworks/esp-idf-v5.3.1",
     "build_dir":          "C:/Users/ealfa/Environment_Logger/Sensor/FirstSensor/build",
