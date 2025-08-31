@@ -3,9 +3,10 @@
 
 
 
-uint8_t Temp_reader;
-uint8_t Hum_reader;
-uint8_t Air_reader;
+
+uint32_t Temp_reader;
+uint32_t Hum_reader;
+uint32_t Air_reader;
 
 
 
