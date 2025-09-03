@@ -2,7 +2,9 @@
 #include <stdint.h>
 #include "driver/gpio.h"
 
-#define SENSOR_PIN ADC1_CHANNEL_0 // GPIO36 if you are using ESP32 DevKitC
+#define TEMP_SENSOR_PIN ADC1_CHANNEL_0 // GPIO36 if you are using ESP32 
+#define HUM_SENSOR_PIN ADC1_CHANNEL_3  // GPIO39 if you are using ESP32
+#define AIR_SENSOR_PIN ADC1_CHANNEL_6  // GPIO34 if you are using ESP32
 
 
 uint32_t Temp_reader;
