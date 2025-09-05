@@ -6,6 +6,7 @@
 #define HUM_SENSOR_PIN ADC1_CHANNEL_3  // GPIO39 if you are using ESP32
 #define AIR_SENSOR_PIN ADC1_CHANNEL_6  // GPIO34 if you are using ESP32
 #define READ_DELAY_MS 1800000 // 30 minutes in milliseconds
+#define VREF 1100 // Reference voltage in mV
 
 
 uint32_t Temp_reader;
