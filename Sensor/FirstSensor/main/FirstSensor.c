@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "driver/gpio.h"
+#include "driver/adc.h"
+#include "esp_adc_cal.h"
 
 #define TEMP_SENSOR_PIN ADC1_CHANNEL_0 // GPIO36 if you are using ESP32 
 #define HUM_SENSOR_PIN ADC1_CHANNEL_3  // GPIO39 if you are using ESP32
@@ -18,6 +20,8 @@ void app_main(void)
 Temp_reader = 0XFF;
 Hum_reader = 0XFF;
 Air_reader = 0XFF;
+
+
 
 
 while(1){
