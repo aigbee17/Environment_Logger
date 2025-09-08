@@ -3,6 +3,7 @@
 #include "driver/gpio.h"
 #include "driver/adc.h"
 #include "esp_adc_cal.h"
+#include "driver/adc.h"
 
 #define TEMP_SENSOR_PIN ADC1_CHANNEL_0 // GPIO36 if you are using ESP32 
 #define HUM_SENSOR_PIN ADC1_CHANNEL_3  // GPIO39 if you are using ESP32
