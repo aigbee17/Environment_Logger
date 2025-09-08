@@ -11,33 +11,60 @@
 #define READ_DELAY_MS 1800000 // 30 minutes in milliseconds
 #define VREF 1100 // Reference voltage in mV
 #define ADC_WIDTH ADC_WIDTH_BIT_12 // 12-bit ADC resolution
-#define ADC_ATTEN ADC_ATTEN_DB_0
+#define ADC_ATTEN ADC_ATTEN_DB_0 
 
-uint32_t Temp_reader;
-uint32_t Hum_reader;
-uint32_t Air_reader;
 
 void app_main(void)
 {
-Temp_reader = 0XFF;
-Hum_reader = 0XFF;
-Air_reader = 0XFF;
+ adc1_config_width(ADC_WIDTH_BIT_12);
+    adc1_config_channel_atten(TEMP_SENSOR_PIN, ADC_ATTEN_DB_0);
+    adc1_config_channel_atten(HUM_SENSOR_PIN, ADC_ATTEN_DB_0);
+    adc1_config_channel_atten(AIR_SENSOR_PIN, ADC_ATTEN_DB_0);
+
+
+    esp_adc_cal_characteristics_t cal_low;
+    esp_adc_cal_characteristics_t cal_high;
+
+    esp_adc_cal_value_t t_low = esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_0, ADC_WIDTH_BIT_12, VREF, &cal_low);
+    esp_adc_cal_value_t t_high = esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_0, ADC_WIDTH_BIT_12, VREF, &cal_high);
+
+
+
+
 
 
 
 
 while(1){
-    adc1_config_width(ADC_WIDTH_BIT_12);
-    adc1_config_channel_atten(TEMP_SENSOR_PIN, ADC_ATTEN_DB_0);
-    adc1_config_channel_atten(HUM_SENSOR_PIN, ADC_ATTEN_DB_0);
-    adc1_config_channel_atten(AIR_SENSOR_PIN, ADC_ATTEN_DB_0);
+   
 
     int raw_temp = adc1_get_raw(TEMP_SENSOR_PIN);
     int raw_hum = adc1_get_raw(HUM_SENSOR_PIN);
     int raw_air = adc1_get_raw(AIR_SENSOR_PIN);
 
-    
+   
+    uint32_t mv_temp = esp_adc_cal_raw_to_voltage(raw_temp, &cal_low);
+    uint32_t mv_hum = esp_adc_cal_raw_to_voltage(raw_hum, &cal_low);
+    uint32_t mv_air = esp_adc_cal_raw_to_voltage(raw_air, &cal_high);
+
+
+
+     float v_temp = mv_temp / 1000.0f;
+     float tempC  = (v_temp - 0.5f) * 100.0f;
+
+     printf("RAW  -> temp:%4d  hum:%4d  air:%4d\n", raw_temp, raw_hum, raw_air);
+     printf("mV   -> temp:%4u  hum:%4u  air:%4u\n", mv_temp, mv_hum, mv_air);
+     printf("TEMP -> %.2f °C\n\n", tempC);
+
+     vTaskDelay(pdMS_TO_TICKS(READ_DELAY_MS));
+
+
+   
+
+
 
 }
-}
 
+
+
+}
