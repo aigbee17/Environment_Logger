@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdio.h> //libraries 
 #include <stdint.h>
 #include "driver/gpio.h"
 #include "driver/adc.h"
