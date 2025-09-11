@@ -16,7 +16,7 @@
 
 void app_main(void)
 {
- adc1_config_width(ADC_WIDTH_BIT_12);
+ adc1_config_width(ADC_WIDTH_BIT_12); 
     adc1_config_channel_atten(TEMP_SENSOR_PIN, ADC_ATTEN_DB_0);
     adc1_config_channel_atten(HUM_SENSOR_PIN, ADC_ATTEN_DB_0);
     adc1_config_channel_atten(AIR_SENSOR_PIN, ADC_ATTEN_DB_0);
