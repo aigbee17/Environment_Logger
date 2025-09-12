@@ -43,4 +43,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Author
 
 Developed by [@aigbee17](https://github.com/aigbee17)  
-For educational and demonstration purposes.
